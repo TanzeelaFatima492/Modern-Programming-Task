@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Assign Students to Courses</title>
+</head>
+
+<body>
+    <h2>Assign Students to Courses (Teachers)</h2>
+
+    <form method="POST" action="assign.php">
+        <!-- Select Teacher / Course -->
+        <label for="course">Select Course / Teacher:</label>
+        <select name="course_id" id="course" required>
+            <option value="">--Select Course--</option>
+            <option value="1">BS Information Technology - Dr. Ali Khan</option>
+            <option value="2">BS Computer Science - Prof. Ayesha Malik</option>
+        </select>
+
+        <br><br>
+
+        <!-- Select Students -->
+        <label>Select Students:</label><br>
+        <input type="checkbox" name="students[]" value="1"> Ali Raza<br>
+        <input type="checkbox" name="students[]" value="2"> Sara Iqbal<br>
+        <input type="checkbox" name="students[]" value="3"> Usman Ahmed<br>
+
+        <br>
+        <button type="submit">Assign Students</button>
+    </form>
+</body>
+
+</html>

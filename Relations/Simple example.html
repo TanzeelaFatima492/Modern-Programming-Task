@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Many-to-Many Example</title>
+</head>
+
+<body>
+    <h2>Enroll Student in Courses</h2>
+
+    <label for="student">Select Student:</label>
+    <select id="student">
+        <option value="1">Ali Khan</option>
+        <option value="2">Ayesha Malik</option>
+    </select>
+
+    <br><br>
+    <label>Select Courses:</label><br>
+    <input type="checkbox" name="course" value="1"> BS Information Technology<br>
+    <input type="checkbox" name="course" value="2"> BS Computer Science<br>
+    <input type="checkbox" name="course" value="3"> Software Engineering<br>
+    <input type="checkbox" name="course" value="4"> Data Science<br>
+
+    <br>
+    <button onclick="enroll()">Enroll Student</button>
+
+    <script>
+        function enroll() {
+            const studentId = document.getElementById('student').value;
+            const courseCheckboxes = document.querySelectorAll('input[name="course"]:checked');
+            const selectedCourses = Array.from(courseCheckboxes).map(cb => cb.value);
+
+            console.log("Student ID:", studentId);
+            console.log("Selected Courses:", selectedCourses);
+
+            // Here you would send data to backend via fetch/ajax
+            // Example POST payload:
+            // { studentId: 1, courses: [1,3] }
+
+            alert(`Student ${studentId} enrolled in courses: ${selectedCourses.join(', ')}`);
+        }
+    </script>
+</body>
+
+</html>

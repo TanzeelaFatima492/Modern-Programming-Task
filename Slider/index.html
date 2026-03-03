@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatic Infinite Image Slider</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .slider-container {
+            width: 800px;
+            max-width: 90%;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+
+        .slider-nav {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: white;
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+            z-index: 10;
+        }
+
+        .slider-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .prev-btn {
+            left: 20px;
+        }
+
+        .next-btn {
+            right: 20px;
+        }
+    </style>
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <div class="slider-container">
+        <div class="slider">
+            <img src="https://picsum.photos/800/400?random=1" alt="Image 1" class="slide">
+            <img src="https://picsum.photos/800/400?random=2" alt="Image 2" class="slide">
+            <img src="https://picsum.photos/800/400?random=3" alt="Image 3" class="slide">
+            <img src="https://picsum.photos/800/400?random=4" alt="Image 4" class="slide">
+            <!-- First image cloned for infinite effect -->
+            <img src="https://picsum.photos/800/400?random=1" alt="Image 1 Clone" class="slide">
+        </div>
+
+        <button class="slider-btn prev-btn">&#10094;</button>
+        <button class="slider-btn next-btn">&#10095;</button>
+
+        <div class="slider-nav">
+            <span class="nav-dot active" data-index="0"></span>
+            <span class="nav-dot" data-index="1"></span>
+            <span class="nav-dot" data-index="2"></span>
+            <span class="nav-dot" data-index="3"></span>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            const $slider = $('.slider');
+            const $slides = $('.slide');
+            const $prevBtn = $('.prev-btn');
+            const $nextBtn = $('.next-btn');
+            const $navDots = $('.nav-dot');
+
+            const slideCount = 4; // Original number of images
+            const slideWidth = $('.slider-container').width();
+            let currentIndex = 0;
+            let autoSlideInterval;
+            const autoSlideDelay = 3000; // 3 seconds
+
+            // Set initial position
+            $slider.css('transform', 'translateX(0)');
+
+            // Function to update slider position
+            function goToSlide(index) {
+                $slider.css('transform', `translateX(-${index * 100}%)`);
+
+                // Update active dot
+                const activeDotIndex = index >= slideCount ? 0 : index;
+                $navDots.removeClass('active');
+                $navDots.eq(activeDotIndex).addClass('active');
+            }
+
+            // Next slide function
+            function nextSlide() {
+                currentIndex++;
+                goToSlide(currentIndex);
+
+                // If we've reached the clone, jump to the first slide instantly
+                if (currentIndex === slideCount) {
+                    setTimeout(function () {
+                        $slider.css('transition', 'none');
+                        currentIndex = 0;
+                        goToSlide(currentIndex);
+                        setTimeout(function () {
+                            $slider.css('transition', 'transform 0.5s ease-in-out');
+                        }, 50);
+                    }, 500);
+                }
+            }
+
+            // Previous slide function
+            function prevSlide() {
+                if (currentIndex === 0) {
+                    // Jump to the clone instantly
+                    $slider.css('transition', 'none');
+                    currentIndex = slideCount;
+                    goToSlide(currentIndex);
+                    setTimeout(function () {
+                        $slider.css('transition', 'transform 0.5s ease-in-out');
+                        currentIndex = slideCount - 1;
+                        goToSlide(currentIndex);
+                    }, 50);
+                } else {
+                    currentIndex--;
+                    goToSlide(currentIndex);
+                }
+            }
+
+            // Start auto-sliding
+            function startAutoSlide() {
+                autoSlideInterval = setInterval(nextSlide, autoSlideDelay);
+            }
+
+            // Stop auto-sliding
+            function stopAutoSlide() {
+                clearInterval(autoSlideInterval);
+            }
+
+            // Event listeners
+            $nextBtn.on('click', function () {
+                stopAutoSlide();
+                nextSlide();
+                startAutoSlide();
+            });
+
+            $prevBtn.on('click', function () {
+                stopAutoSlide();
+                prevSlide();
+                startAutoSlide();
+            });
+
+            // Navigation dots click
+            $navDots.on('click', function () {
+                const index = $(this).data('index');
+                stopAutoSlide();
+                currentIndex = index;
+                goToSlide(currentIndex);
+                startAutoSlide();
+            });
+
+            // Pause auto-slide on hover
+            $('.slider-container').on('mouseenter', stopAutoSlide);
+            $('.slider-container').on('mouseleave', startAutoSlide);
+
+            // Start auto-sliding
+            startAutoSlide();
+
+            // Handle window resize
+            $(window).on('resize', function () {
+                const newSlideWidth = $('.slider-container').width();
+                goToSlide(currentIndex);
+            });
+        });
+    </script>
+</body>
+
+</html>
