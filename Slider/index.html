@@ -96,19 +96,18 @@
         }
     </style>
 
-    <!-- jQuery CDN -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
     <div class="slider-container">
         <div class="slider">
-            <img src="https://picsum.photos/800/400?random=1" alt="Image 1" class="slide">
-            <img src="https://picsum.photos/800/400?random=2" alt="Image 2" class="slide">
-            <img src="https://picsum.photos/800/400?random=3" alt="Image 3" class="slide">
-            <img src="https://picsum.photos/800/400?random=4" alt="Image 4" class="slide">
-            <!-- First image cloned for infinite effect -->
-            <img src="https://picsum.photos/800/400?random=1" alt="Image 1 Clone" class="slide">
+
+            <img src="38-800x400.jpg" alt="Image 1" class="slide">
+            <img src="2-800x400.jpg" alt="Image 2" class="slide">
+            <img src="122-800x400.jpg" alt="Image 3" class="slide">
+            <img src="415-800x400.jpg" alt="Image 4" class="slide">
+
         </div>
 
         <button class="slider-btn prev-btn">&#10094;</button>
@@ -221,10 +220,8 @@
             $('.slider-container').on('mouseenter', stopAutoSlide);
             $('.slider-container').on('mouseleave', startAutoSlide);
 
-            // Start auto-sliding
             startAutoSlide();
 
-            // Handle window resize
             $(window).on('resize', function () {
                 const newSlideWidth = $('.slider-container').width();
                 goToSlide(currentIndex);

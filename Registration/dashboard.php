@@ -1,12 +1,10 @@
 <?php
 require_once 'config.php';
 
-// Check if user is logged in
 if (!isset($_SESSION['user_id']) || !$_SESSION['logged_in']) {
     redirect('login.php');
 }
 
-// Get user info
 $user_id = $_SESSION['user_id'];
 $stmt = $conn->prepare("SELECT username, email, created_at FROM users WHERE id = ?");
 $stmt->bind_param("i", $user_id);
@@ -14,12 +12,11 @@ $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 
-// Logout functionality
 if (isset($_POST['logout'])) {
-    // Clear session
+  
     $_SESSION = array();
 
-    // Destroy session cookie
+    
     if (ini_get("session.use_cookies")) {
         $params = session_get_cookie_params();
         setcookie(
