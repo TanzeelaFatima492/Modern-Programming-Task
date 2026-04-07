@@ -2,17 +2,16 @@
 session_start();
 
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header('Location: login.php');
+    header('Location: index.php');
     exit();
 }
 
 if (isset($_GET['logout'])) {
     session_destroy();
-    header('Location: login.php');
+    header('Location: index.php');
     exit();
 }
-?>
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -28,8 +27,6 @@ if (isset($_GET['logout'])) {
             min-height: 100vh;
             padding: 20px;
         }
-        
-        /* Dashboard Container */
         .dashboard-container { 
             max-width: 1400px; 
             margin: 0 auto; 
@@ -37,21 +34,7 @@ if (isset($_GET['logout'])) {
             border-radius: 20px; 
             overflow: hidden;
             box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-            animation: slideUp 0.5s ease;
         }
-        
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Header */
         .dashboard-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -60,38 +43,7 @@ if (isset($_GET['logout'])) {
             justify-content: space-between;
             align-items: center;
         }
-        
-        .dashboard-header h1 {
-            font-size: 28px;
-            font-weight: 700;
-        }
-        
-        .dashboard-header h1 i {
-            margin-right: 10px;
-        }
-        
-        .stats {
-            display: flex;
-            gap: 20px;
-        }
-        
-        .stat-card {
-            background: rgba(255,255,255,0.2);
-            padding: 10px 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-        
-        .stat-card .number {
-            font-size: 24px;
-            font-weight: 700;
-        }
-        
-        .stat-card .label {
-            font-size: 12px;
-            opacity: 0.9;
-        }
-        
+        .dashboard-header h1 { font-size: 28px; font-weight: 700; }
         .logout-btn {
             background: rgba(255,255,255,0.2);
             color: white;
@@ -103,20 +55,16 @@ if (isset($_GET['logout'])) {
             font-weight: 500;
             transition: all 0.3s;
         }
-        
         .logout-btn:hover {
             background: rgba(255,255,255,0.3);
             transform: translateY(-2px);
         }
-        
-        /* Tabs */
         .dashboard-tabs {
             display: flex;
             border-bottom: 2px solid #eee;
             padding: 0 35px;
             background: #fafafa;
         }
-        
         .tab-btn {
             padding: 18px 30px;
             background: none;
@@ -126,67 +74,25 @@ if (isset($_GET['logout'])) {
             cursor: pointer;
             color: #666;
             transition: all 0.3s;
-            position: relative;
         }
-        
-        .tab-btn i {
-            margin-right: 8px;
-        }
-        
-        .tab-btn:hover {
-            color: #667eea;
-        }
-        
-        .tab-btn.active { 
-            color: #667eea; 
-        }
-        
-        .tab-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        /* Tab Content */
+        .tab-btn i { margin-right: 8px; }
+        .tab-btn.active { color: #667eea; border-bottom: 3px solid #667eea; }
         .tab-content { display: none; padding: 35px; background: white; }
-        .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        /* Forms */
-        .upload-form, .edit-form { max-width: 550px; }
+        .tab-content.active { display: block; }
+        .upload-form { max-width: 550px; }
         .form-group { margin-bottom: 25px; }
-        .form-group label { 
-            font-weight: 600; 
-            color: #333; 
-            margin-bottom: 8px; 
-            display: block;
-            font-size: 14px;
-        }
+        .form-group label { font-weight: 600; color: #333; margin-bottom: 8px; display: block; }
         .form-group input, .form-group textarea {
             width: 100%;
             padding: 12px 15px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 14px;
-            transition: all 0.3s;
         }
         .form-group input:focus, .form-group textarea:focus {
             outline: none;
             border-color: #667eea;
         }
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-        
         .submit-btn, .update-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -196,105 +102,27 @@ if (isset($_GET['logout'])) {
             cursor: pointer;
             font-size: 16px;
             font-weight: 600;
-            transition: all 0.3s;
         }
-        
-        .submit-btn:hover, .update-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
-        }
-        
-        /* Table */
-        .table-wrapper {
-            overflow-x: auto;
-            border-radius: 10px;
-        }
-        
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-        }
-        
-        th, td { 
-            padding: 15px; 
-            text-align: left; 
-            border-bottom: 1px solid #f0f0f0; 
-        }
-        
-        th { 
-            background: #f8f9fa; 
-            font-weight: 600;
-            color: #555;
-            font-size: 14px;
-        }
-        
-        tr:hover {
-            background: #fafafa;
-        }
-        
-        .slide-preview { 
-            width: 80px; 
-            height: 55px; 
-            object-fit: cover; 
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+        th { background: #f8f9fa; font-weight: 600; color: #555; }
+        .slide-preview { width: 80px; height: 55px; object-fit: cover; border-radius: 8px; }
         .edit-btn, .delete-btn {
             padding: 6px 14px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             margin: 2px;
-            font-size: 12px;
-            font-weight: 500;
-            transition: all 0.3s;
         }
-        
-        .edit-btn { 
-            background: #2196F3; 
-            color: white; 
-        }
-        .edit-btn:hover {
-            background: #0b7dda;
-            transform: translateY(-1px);
-        }
-        
-        .delete-btn { 
-            background: #f44336; 
-            color: white; 
-        }
-        .delete-btn:hover {
-            background: #d32f2f;
-            transform: translateY(-1px);
-        }
-        
-        /* Alert Messages */
-        .alert {
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            animation: slideDown 0.3s ease;
-        }
-        
+        .edit-btn { background: #2196F3; color: white; }
+        .delete-btn { background: #f44336; color: white; }
         .alert-success {
             background: #d4edda;
             color: #155724;
-            border-left: 4px solid #28a745;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
         }
-        
-        @keyframes slideDown {
-            from {
-                transform: translateY(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -303,23 +131,19 @@ if (isset($_GET['logout'])) {
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.5);
             justify-content: center;
             align-items: center;
-            animation: fadeIn 0.3s ease;
         }
-        
         .modal-content {
-            background-color: white;
+            background: white;
             border-radius: 20px;
             padding: 30px;
             width: 90%;
             max-width: 550px;
             max-height: 90vh;
             overflow-y: auto;
-            animation: slideUp 0.3s ease;
         }
-        
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -328,24 +152,12 @@ if (isset($_GET['logout'])) {
             padding-bottom: 15px;
             border-bottom: 2px solid #f0f0f0;
         }
-        
-        .modal-header h3 {
-            font-size: 24px;
-            color: #333;
-        }
-        
         .close-modal {
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
             color: #999;
-            transition: all 0.3s;
         }
-        
-        .close-modal:hover {
-            color: #333;
-        }
-        
         .current-image {
             text-align: center;
             margin-bottom: 25px;
@@ -353,14 +165,11 @@ if (isset($_GET['logout'])) {
             background: #f8f9fa;
             border-radius: 12px;
         }
-        
         .current-image img {
             max-width: 100%;
             max-height: 180px;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        
         .change-image-box {
             border: 2px dashed #ddd;
             padding: 20px;
@@ -368,42 +177,13 @@ if (isset($_GET['logout'])) {
             background: #fafafa;
             margin-top: 15px;
         }
-        
-        .change-image-box label {
-            cursor: pointer;
-            color: #667eea;
-            font-weight: 600;
-        }
-        
-        .image-preview {
-            margin-top: 15px;
-            text-align: center;
-        }
-        
-        .image-preview img {
-            max-width: 100%;
-            max-height: 100px;
-            border-radius: 8px;
-        }
-        
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 60px;
-            color: #999;
-        }
-        
-        .empty-state i {
-            font-size: 64px;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-        
+        .image-preview { margin-top: 15px; text-align: center; }
+        .image-preview img { max-width: 100%; max-height: 100px; border-radius: 8px; }
+        .empty-state { text-align: center; padding: 60px; color: #999; }
         @media (max-width: 768px) {
             .dashboard-header { flex-direction: column; gap: 15px; text-align: center; }
             .dashboard-tabs { padding: 0 15px; }
             .tab-btn { padding: 12px 15px; font-size: 13px; }
-            .tab-content { padding: 20px; }
             th, td { padding: 10px; font-size: 12px; }
             .slide-preview { width: 50px; height: 35px; }
         }
@@ -413,12 +193,6 @@ if (isset($_GET['logout'])) {
     <div class="dashboard-container">
         <div class="dashboard-header">
             <h1><i class="fas fa-crown"></i> Slider Management</h1>
-            <div class="stats">
-                <div class="stat-card">
-                    <div class="number" id="slideCount">0</div>
-                    <div class="label">Total Slides</div>
-                </div>
-            </div>
             <a href="?logout=1" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
         
@@ -429,9 +203,7 @@ if (isset($_GET['logout'])) {
         
         <div id="viewTab" class="tab-content active">
             <div id="message"></div>
-            <div class="table-wrapper" id="imagesTable">
-                <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading slides...</p></div>
-            </div>
+            <div id="imagesTable"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading slides...</p></div></div>
         </div>
         
         <div id="addTab" class="tab-content">
@@ -448,19 +220,16 @@ if (isset($_GET['logout'])) {
                 <div class="form-group">
                     <label><i class="fas fa-sort-numeric-down"></i> Display Order</label>
                     <input type="number" name="order_position" id="order_position" value="0" placeholder="Lower number appears first">
-                    <small style="color: #888;">Slides will be sorted by this number</small>
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-image"></i> Slide Image *</label>
                     <input type="file" name="image" id="image" accept="image/*" required>
-                    <small style="color: #888;">Recommended size: 1920x1080px | JPG, PNG, GIF</small>
                 </div>
                 <button type="submit" class="submit-btn"><i class="fas fa-upload"></i> Upload Slide</button>
             </form>
         </div>
     </div>
 
-    <!-- Edit Modal -->
     <div id="editModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -485,16 +254,14 @@ if (isset($_GET['logout'])) {
                     <label>Order Position</label>
                     <input type="number" id="edit_order" placeholder="Display order">
                 </div>
-                
                 <div class="change-image-box">
                     <label><i class="fas fa-sync-alt"></i> Change Image (Optional)</label>
                     <input type="file" id="edit_image" name="image" accept="image/*" style="margin-top: 10px;">
                     <div class="image-preview" id="edit_image_preview"></div>
                 </div>
-                
                 <div style="display: flex; gap: 12px; margin-top: 25px;">
                     <button type="submit" class="update-btn"><i class="fas fa-save"></i> Save Changes</button>
-                    <button type="button" class="cancel-btn" onclick="closeEditModal()" style="background:#999; color:white; padding:12px 25px; border:none; border-radius:10px; cursor:pointer;"><i class="fas fa-times"></i> Cancel</button>
+                    <button type="button" onclick="closeEditModal()" style="background:#999; color:white; padding:12px 25px; border:none; border-radius:10px; cursor:pointer;"><i class="fas fa-times"></i> Cancel</button>
                 </div>
             </form>
         </div>
@@ -521,7 +288,6 @@ if (isset($_GET['logout'])) {
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
-                    $('#slideCount').text(data.length);
                     if (data.length === 0) {
                         $('#imagesTable').html('<div class="empty-state"><i class="fas fa-folder-open"></i><p>No slides yet.<br>Click "Add New Slide" to get started!</p></div>');
                         return;
@@ -529,7 +295,7 @@ if (isset($_GET['logout'])) {
                     let html = '<table><thead><tr><th>Preview</th><th>Title</th><th>Caption</th><th>Order</th><th>Actions</th></tr></thead><tbody>';
                     data.forEach(slide => {
                         html += `<tr>
-                            <td><img src="${slide.image_path}" class="slide-preview" onerror="this.src='https://via.placeholder.com/80x50?text=No+Image'"></td>
+                            <td><img src="${slide.image_path}" class="slide-preview" onerror="this.src='https://via.placeholder.com/80x50'"></td>
                             <td><strong>${escapeHtml(slide.title)}</strong></td>
                             <td>${escapeHtml(slide.caption || '-')}</td>
                             <td><span style="background:#f0f0f0; padding:4px 10px; border-radius:20px;">${slide.order_position}</span></td>
@@ -591,7 +357,6 @@ if (isset($_GET['logout'])) {
             formData.append('title', $('#edit_title').val());
             formData.append('caption', $('#edit_caption').val());
             formData.append('order_position', $('#edit_order').val());
-            
             const newImage = $('#edit_image')[0].files[0];
             if (newImage) formData.append('new_image', newImage);
             
@@ -668,7 +433,7 @@ if (isset($_GET['logout'])) {
         });
         
         function showMessage(msg) {
-            $('#message').html(`<div class="alert alert-success"><i class="fas fa-check-circle"></i> ${msg}</div>`);
+            $('#message').html(`<div class="alert-success"><i class="fas fa-check-circle"></i> ${msg}</div>`);
             setTimeout(() => $('#message').html(''), 3000);
         }
         

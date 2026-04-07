@@ -364,7 +364,7 @@
         </div>
 
         <div class="admin-link">
-            <a href="Admin/login.php" class="admin-btn">
+            <a href="Admin/index.php" class="admin-btn">
                 <i class="fas fa-crown"></i> Admin Dashboard
                 <i class="fas fa-arrow-right"></i>
             </a>
