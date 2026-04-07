@@ -1,13 +1,11 @@
 <?php
 session_start();
 
-// Check if user is logged in
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
     header('Location: login.php');
     exit();
 }
 
-// Handle logout
 if (isset($_GET['logout'])) {
     session_destroy();
     header('Location: login.php');
@@ -19,118 +17,284 @@ if (isset($_GET['logout'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slider Dashboard</title>
+    <title>Admin Dashboard | Slider Manager</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
+        
+        /* Dashboard Container */
         .dashboard-container { 
-            max-width: 1200px; 
+            max-width: 1400px; 
             margin: 0 auto; 
             background: white; 
-            border-radius: 15px; 
+            border-radius: 20px; 
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease;
         }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Header */
         .dashboard-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 20px 30px;
+            padding: 25px 35px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .dashboard-header h1 { font-size: 24px; }
+        
+        .dashboard-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .dashboard-header h1 i {
+            margin-right: 10px;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-card .number {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .stat-card .label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
         .logout-btn {
             background: rgba(255,255,255,0.2);
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
         }
+        
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Tabs */
         .dashboard-tabs {
             display: flex;
             border-bottom: 2px solid #eee;
-            padding: 0 30px;
+            padding: 0 35px;
             background: #fafafa;
         }
+        
         .tab-btn {
-            padding: 15px 25px;
+            padding: 18px 30px;
             background: none;
             border: none;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
             color: #666;
+            transition: all 0.3s;
+            position: relative;
         }
-        .tab-btn.active { color: #667eea; border-bottom: 3px solid #667eea; background: white; }
-        .tab-content { display: none; padding: 30px; background: white; }
-        .tab-content.active { display: block; }
-        .upload-form, .edit-form { max-width: 500px; }
-        .upload-form .form-group, .edit-form .form-group { margin-bottom: 20px; }
-        .upload-form label, .edit-form label { font-weight: 600; color: #555; margin-bottom: 8px; display: block; }
-        .upload-form input, .edit-form input, 
-        .upload-form textarea, .edit-form textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+        
+        .tab-btn i {
+            margin-right: 8px;
+        }
+        
+        .tab-btn:hover {
+            color: #667eea;
+        }
+        
+        .tab-btn.active { 
+            color: #667eea; 
+        }
+        
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        /* Tab Content */
+        .tab-content { display: none; padding: 35px; background: white; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Forms */
+        .upload-form, .edit-form { max-width: 550px; }
+        .form-group { margin-bottom: 25px; }
+        .form-group label { 
+            font-weight: 600; 
+            color: #333; 
+            margin-bottom: 8px; 
+            display: block;
             font-size: 14px;
         }
-        .upload-form textarea, .edit-form textarea {
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .form-group textarea {
             resize: vertical;
-            min-height: 80px;
+            min-height: 100px;
         }
+        
         .submit-btn, .update-btn {
-            background: #4CAF50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 12px 25px;
+            padding: 12px 30px;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 600;
+            transition: all 0.3s;
         }
-        .cancel-btn {
-            background: #999;
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            margin-left: 10px;
+        
+        .submit-btn:hover, .update-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
         }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #f8f9fa; }
+        
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 10px;
+        }
+        
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        
+        th, td { 
+            padding: 15px; 
+            text-align: left; 
+            border-bottom: 1px solid #f0f0f0; 
+        }
+        
+        th { 
+            background: #f8f9fa; 
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        tr:hover {
+            background: #fafafa;
+        }
+        
         .slide-preview { 
             width: 80px; 
-            height: 50px; 
+            height: 55px; 
             object-fit: cover; 
-            border-radius: 5px;
-            background: #f0f0f0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+        
         .edit-btn, .delete-btn {
-            padding: 5px 12px;
+            padding: 6px 14px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             margin: 2px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s;
         }
-        .edit-btn { background: #2196F3; color: white; }
-        .delete-btn { background: #f44336; color: white; }
-        .success-msg { background: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 20px; }
         
-        /* Modal Styles */
+        .edit-btn { 
+            background: #2196F3; 
+            color: white; 
+        }
+        .edit-btn:hover {
+            background: #0b7dda;
+            transform: translateY(-1px);
+        }
+        
+        .delete-btn { 
+            background: #f44336; 
+            color: white; 
+        }
+        .delete-btn:hover {
+            background: #d32f2f;
+            transform: translateY(-1px);
+        }
+        
+        /* Alert Messages */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            animation: slideDown 0.3s ease;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -142,127 +306,156 @@ if (isset($_GET['logout'])) {
             background-color: rgba(0,0,0,0.5);
             justify-content: center;
             align-items: center;
+            animation: fadeIn 0.3s ease;
         }
+        
         .modal-content {
             background-color: white;
-            border-radius: 15px;
+            border-radius: 20px;
             padding: 30px;
             width: 90%;
             max-width: 550px;
             max-height: 90vh;
             overflow-y: auto;
-            animation: slideDown 0.3s ease;
+            animation: slideUp 0.3s ease;
         }
+        
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #eee;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
         }
+        
         .modal-header h3 {
+            font-size: 24px;
             color: #333;
-            font-size: 22px;
         }
+        
         .close-modal {
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
             color: #999;
+            transition: all 0.3s;
         }
+        
         .close-modal:hover {
             color: #333;
         }
+        
         .current-image {
             text-align: center;
-            margin-bottom: 20px;
-            padding: 15px;
+            margin-bottom: 25px;
+            padding: 20px;
             background: #f8f9fa;
-            border-radius: 8px;
+            border-radius: 12px;
         }
+        
         .current-image img {
             max-width: 100%;
-            max-height: 150px;
-            border-radius: 8px;
-            margin-bottom: 10px;
+            max-height: 180px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
+        
         .change-image-box {
             border: 2px dashed #ddd;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 20px;
+            border-radius: 12px;
             background: #fafafa;
-            margin-top: 10px;
+            margin-top: 15px;
         }
+        
         .change-image-box label {
             cursor: pointer;
-            color: #2196F3;
-            font-weight: bold;
+            color: #667eea;
+            font-weight: 600;
         }
+        
         .image-preview {
-            margin-top: 10px;
+            margin-top: 15px;
             text-align: center;
         }
+        
         .image-preview img {
             max-width: 100%;
             max-height: 100px;
-            border-radius: 5px;
-            margin-top: 10px;
+            border-radius: 8px;
         }
-        .info-text {
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #999;
         }
-        @keyframes slideDown {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+        
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-header { flex-direction: column; gap: 15px; text-align: center; }
+            .dashboard-tabs { padding: 0 15px; }
+            .tab-btn { padding: 12px 15px; font-size: 13px; }
+            .tab-content { padding: 20px; }
+            th, td { padding: 10px; font-size: 12px; }
+            .slide-preview { width: 50px; height: 35px; }
         }
     </style>
 </head>
 <body>
     <div class="dashboard-container">
         <div class="dashboard-header">
-            <h1><i class="fas fa-image"></i> Slider Management Dashboard</h1>
+            <h1><i class="fas fa-crown"></i> Slider Management</h1>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="number" id="slideCount">0</div>
+                    <div class="label">Total Slides</div>
+                </div>
+            </div>
             <a href="?logout=1" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
         
         <div class="dashboard-tabs">
-            <button class="tab-btn active" onclick="showTab('view')">📋 View & Manage</button>
-            <button class="tab-btn" onclick="showTab('add')">➕ Add New Image</button>
+            <button class="tab-btn active" onclick="showTab('view')"><i class="fas fa-images"></i> Manage Slides</button>
+            <button class="tab-btn" onclick="showTab('add')"><i class="fas fa-plus-circle"></i> Add New Slide</button>
         </div>
         
         <div id="viewTab" class="tab-content active">
             <div id="message"></div>
-            <div id="imagesTable">Loading...</div>
+            <div class="table-wrapper" id="imagesTable">
+                <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading slides...</p></div>
+            </div>
         </div>
         
         <div id="addTab" class="tab-content">
-            <h3>Upload New Slide</h3>
+            <h2 style="margin-bottom: 25px;"><i class="fas fa-cloud-upload-alt"></i> Upload New Slide</h2>
             <form id="uploadForm" class="upload-form" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label>Title *</label>
-                    <input type="text" name="title" id="title" required>
+                    <label><i class="fas fa-heading"></i> Slide Title *</label>
+                    <input type="text" name="title" id="title" placeholder="Enter an eye-catching title" required>
                 </div>
                 <div class="form-group">
-                    <label>Caption</label>
-                    <textarea name="caption" id="caption" rows="3"></textarea>
+                    <label><i class="fas fa-align-left"></i> Description / Caption</label>
+                    <textarea name="caption" id="caption" rows="3" placeholder="Write a brief description..."></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Order Position</label>
-                    <input type="number" name="order_position" id="order_position" value="0">
+                    <label><i class="fas fa-sort-numeric-down"></i> Display Order</label>
+                    <input type="number" name="order_position" id="order_position" value="0" placeholder="Lower number appears first">
+                    <small style="color: #888;">Slides will be sorted by this number</small>
                 </div>
                 <div class="form-group">
-                    <label>Image *</label>
+                    <label><i class="fas fa-image"></i> Slide Image *</label>
                     <input type="file" name="image" id="image" accept="image/*" required>
+                    <small style="color: #888;">Recommended size: 1920x1080px | JPG, PNG, GIF</small>
                 </div>
-                <button type="submit" class="submit-btn"><i class="fas fa-upload"></i> Upload</button>
+                <button type="submit" class="submit-btn"><i class="fas fa-upload"></i> Upload Slide</button>
             </form>
         </div>
     </div>
@@ -278,33 +471,30 @@ if (isset($_GET['logout'])) {
                 <input type="hidden" id="edit_id">
                 <div class="current-image">
                     <label>Current Image:</label><br>
-                    <img id="current_image_preview" src="" alt="Current Image" onerror="this.src='https://via.placeholder.com/150x100?text=No+Image'">
-                    <br><small>Current image in slider</small>
+                    <img id="current_image_preview" src="" alt="Current Image">
                 </div>
                 <div class="form-group">
                     <label>Title *</label>
-                    <input type="text" id="edit_title" required placeholder="Enter slide title">
+                    <input type="text" id="edit_title" required placeholder="Slide title">
                 </div>
                 <div class="form-group">
                     <label>Caption</label>
-                    <textarea id="edit_caption" rows="3" placeholder="Enter slide description"></textarea>
+                    <textarea id="edit_caption" rows="3" placeholder="Slide description"></textarea>
                 </div>
                 <div class="form-group">
                     <label>Order Position</label>
-                    <input type="number" id="edit_order" placeholder="Order position (lower = earlier)">
-                    <small style="color: #666;">Images will be displayed in ascending order</small>
+                    <input type="number" id="edit_order" placeholder="Display order">
                 </div>
                 
                 <div class="change-image-box">
-                    <label><i class="fas fa-image"></i> Change Image (Optional)</label>
-                    <input type="file" id="edit_image" name="image" accept="image/jpeg,image/png,image/jpg,image/gif">
-                    <div class="info-text">Leave empty to keep current image. Max size: 5MB</div>
+                    <label><i class="fas fa-sync-alt"></i> Change Image (Optional)</label>
+                    <input type="file" id="edit_image" name="image" accept="image/*" style="margin-top: 10px;">
                     <div class="image-preview" id="edit_image_preview"></div>
                 </div>
                 
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <div style="display: flex; gap: 12px; margin-top: 25px;">
                     <button type="submit" class="update-btn"><i class="fas fa-save"></i> Save Changes</button>
-                    <button type="button" class="cancel-btn" onclick="closeEditModal()"><i class="fas fa-times"></i> Cancel</button>
+                    <button type="button" class="cancel-btn" onclick="closeEditModal()" style="background:#999; color:white; padding:12px 25px; border:none; border-radius:10px; cursor:pointer;"><i class="fas fa-times"></i> Cancel</button>
                 </div>
             </form>
         </div>
@@ -331,29 +521,26 @@ if (isset($_GET['logout'])) {
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
+                    $('#slideCount').text(data.length);
                     if (data.length === 0) {
-                        $('#imagesTable').html('<p style="text-align:center;padding:40px;">No images found. Click "Add New Image" to upload.</p>');
+                        $('#imagesTable').html('<div class="empty-state"><i class="fas fa-folder-open"></i><p>No slides yet.<br>Click "Add New Slide" to get started!</p></div>');
                         return;
                     }
                     let html = '<table><thead><tr><th>Preview</th><th>Title</th><th>Caption</th><th>Order</th><th>Actions</th></tr></thead><tbody>';
                     data.forEach(slide => {
-                        let imageUrl = slide.image_path;
                         html += `<tr>
-                            <td><img src="${imageUrl}" class="slide-preview" onerror="this.src='https://via.placeholder.com/80x50?text=No+Image'"></strong></td>
+                            <td><img src="${slide.image_path}" class="slide-preview" onerror="this.src='https://via.placeholder.com/80x50?text=No+Image'"></td>
                             <td><strong>${escapeHtml(slide.title)}</strong></td>
-                            <td>${escapeHtml(slide.caption || '')}</td>
-                            <td>${slide.order_position}</td>
+                            <td>${escapeHtml(slide.caption || '-')}</td>
+                            <td><span style="background:#f0f0f0; padding:4px 10px; border-radius:20px;">${slide.order_position}</span></td>
                             <td>
                                 <button class="edit-btn" onclick="openEditModal(${slide.id})"><i class="fas fa-edit"></i> Edit</button>
                                 <button class="delete-btn" onclick="deleteSlide(${slide.id})"><i class="fas fa-trash"></i> Delete</button>
                             </td>
-                        <tr>`;
+                        </tr>`;
                     });
                     html += '</tbody></table>';
                     $('#imagesTable').html(html);
-                },
-                error: function(xhr, status, error) {
-                    $('#imagesTable').html('<p style="text-align:center;padding:40px;color:#c00;">Error loading images: ' + error + '</p>');
                 }
             });
         }
@@ -384,11 +571,9 @@ if (isset($_GET['logout'])) {
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    $('#edit_image_preview').html(`<img src="${e.target.result}" alt="New Image Preview"><br><small>New image (will replace current)</small>`);
+                    $('#edit_image_preview').html(`<img src="${e.target.result}" alt="Preview"><br><small>New image preview</small>`);
                 }
                 reader.readAsDataURL(file);
-            } else {
-                $('#edit_image_preview').html('');
             }
         });
         
@@ -400,7 +585,6 @@ if (isset($_GET['logout'])) {
         
         $('#editForm').on('submit', function(e) {
             e.preventDefault();
-            
             const formData = new FormData();
             formData.append('action', 'edit_full');
             formData.append('id', $('#edit_id').val());
@@ -409,9 +593,7 @@ if (isset($_GET['logout'])) {
             formData.append('order_position', $('#edit_order').val());
             
             const newImage = $('#edit_image')[0].files[0];
-            if (newImage) {
-                formData.append('new_image', newImage);
-            }
+            if (newImage) formData.append('new_image', newImage);
             
             $('.update-btn').html('<i class="fas fa-spinner fa-spin"></i> Saving...').prop('disabled', true);
             
@@ -431,9 +613,6 @@ if (isset($_GET['logout'])) {
                         alert(res.message);
                     }
                 },
-                error: function() {
-                    alert('Error saving changes. Please try again.');
-                },
                 complete: function() {
                     $('.update-btn').html('<i class="fas fa-save"></i> Save Changes').prop('disabled', false);
                 }
@@ -441,7 +620,7 @@ if (isset($_GET['logout'])) {
         });
         
         function deleteSlide(id) {
-            if (confirm('Are you sure you want to delete this slide? This action cannot be undone.')) {
+            if (confirm('⚠️ Delete this slide? This action cannot be undone.')) {
                 $.ajax({
                     url: 'admin_ajax.php',
                     type: 'POST',
@@ -489,7 +668,7 @@ if (isset($_GET['logout'])) {
         });
         
         function showMessage(msg) {
-            $('#message').html(`<div class="success-msg"><i class="fas fa-check-circle"></i> ${msg}</div>`);
+            $('#message').html(`<div class="alert alert-success"><i class="fas fa-check-circle"></i> ${msg}</div>`);
             setTimeout(() => $('#message').html(''), 3000);
         }
         
@@ -504,9 +683,7 @@ if (isset($_GET['logout'])) {
         }
         
         $(window).on('click', function(e) {
-            if ($(e.target).is('#editModal')) {
-                closeEditModal();
-            }
+            if ($(e.target).is('#editModal')) closeEditModal();
         });
         
         loadImages();
