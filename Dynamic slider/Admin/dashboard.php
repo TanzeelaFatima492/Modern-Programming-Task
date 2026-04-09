@@ -44,6 +44,13 @@ if (isset($_GET['logout'])) {
             align-items: center;
         }
         .dashboard-header h1 { font-size: 28px; font-weight: 700; }
+        .stats {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 10px;
+        }
+        .stats .number { font-size: 24px; font-weight: 700; }
+        .stats .label { font-size: 12px; opacity: 0.9; }
         .logout-btn {
             background: rgba(255,255,255,0.2);
             color: white;
@@ -103,16 +110,42 @@ if (isset($_GET['logout'])) {
             font-size: 16px;
             font-weight: 600;
         }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #f0f0f0; }
-        th { background: #f8f9fa; font-weight: 600; color: #555; }
-        .slide-preview { width: 80px; height: 55px; object-fit: cover; border-radius: 8px; }
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        th, td { 
+            padding: 15px; 
+            text-align: left; 
+            border-bottom: 1px solid #f0f0f0; 
+        }
+        th { 
+            background: #f8f9fa; 
+            font-weight: 600; 
+            color: #555; 
+        }
+        tr:hover {
+            background: #fafafa;
+        }
+        .slide-preview { 
+            width: 80px; 
+            height: 55px; 
+            object-fit: cover; 
+            border-radius: 8px;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+        }
         .edit-btn, .delete-btn {
             padding: 6px 14px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             margin: 2px;
+            font-size: 12px;
+            font-weight: 500;
         }
         .edit-btn { background: #2196F3; color: white; }
         .delete-btn { background: #f44336; color: white; }
@@ -169,6 +202,7 @@ if (isset($_GET['logout'])) {
             max-width: 100%;
             max-height: 180px;
             border-radius: 10px;
+            object-fit: contain;
         }
         .change-image-box {
             border: 2px dashed #ddd;
@@ -180,6 +214,7 @@ if (isset($_GET['logout'])) {
         .image-preview { margin-top: 15px; text-align: center; }
         .image-preview img { max-width: 100%; max-height: 100px; border-radius: 8px; }
         .empty-state { text-align: center; padding: 60px; color: #999; }
+        .empty-state i { font-size: 64px; margin-bottom: 20px; opacity: 0.5; }
         @media (max-width: 768px) {
             .dashboard-header { flex-direction: column; gap: 15px; text-align: center; }
             .dashboard-tabs { padding: 0 15px; }
@@ -193,6 +228,10 @@ if (isset($_GET['logout'])) {
     <div class="dashboard-container">
         <div class="dashboard-header">
             <h1><i class="fas fa-crown"></i> Slider Management</h1>
+            <div class="stats" id="stats">
+                <div class="number" id="slideCount">0</div>
+                <div class="label">Total Slides</div>
+            </div>
             <a href="?logout=1" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
         
@@ -203,7 +242,9 @@ if (isset($_GET['logout'])) {
         
         <div id="viewTab" class="tab-content active">
             <div id="message"></div>
-            <div id="imagesTable"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading slides...</p></div></div>
+            <div class="table-wrapper" id="imagesTable">
+                <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading slides...</p></div>
+            </div>
         </div>
         
         <div id="addTab" class="tab-content">
@@ -224,12 +265,14 @@ if (isset($_GET['logout'])) {
                 <div class="form-group">
                     <label><i class="fas fa-image"></i> Slide Image *</label>
                     <input type="file" name="image" id="image" accept="image/*" required>
+                    <small style="color: #888;">Recommended size: 1920x1080px | JPG, PNG, GIF</small>
                 </div>
                 <button type="submit" class="submit-btn"><i class="fas fa-upload"></i> Upload Slide</button>
             </form>
         </div>
     </div>
 
+    <!-- Edit Modal -->
     <div id="editModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -240,7 +283,7 @@ if (isset($_GET['logout'])) {
                 <input type="hidden" id="edit_id">
                 <div class="current-image">
                     <label>Current Image:</label><br>
-                    <img id="current_image_preview" src="" alt="Current Image">
+                    <img id="current_image_preview" src="" alt="Current Image" onerror="this.src='https://via.placeholder.com/300x150?text=No+Image'">
                 </div>
                 <div class="form-group">
                     <label>Title *</label>
@@ -288,14 +331,20 @@ if (isset($_GET['logout'])) {
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
+                    $('#slideCount').text(data.length);
                     if (data.length === 0) {
                         $('#imagesTable').html('<div class="empty-state"><i class="fas fa-folder-open"></i><p>No slides yet.<br>Click "Add New Slide" to get started!</p></div>');
                         return;
                     }
                     let html = '<table><thead><tr><th>Preview</th><th>Title</th><th>Caption</th><th>Order</th><th>Actions</th></tr></thead><tbody>';
                     data.forEach(slide => {
+                        // Fix image path for display
+                        let imgPath = slide.image_path;
+                        if (imgPath && !imgPath.startsWith('http') && !imgPath.startsWith('/')) {
+                            imgPath = '../' + imgPath;
+                        }
                         html += `<tr>
-                            <td><img src="${slide.image_path}" class="slide-preview" onerror="this.src='https://via.placeholder.com/80x50'"></td>
+                            <td><img src="${imgPath}" class="slide-preview" onerror="this.src='https://via.placeholder.com/80x50?text=No+Image'"></td>
                             <td><strong>${escapeHtml(slide.title)}</strong></td>
                             <td>${escapeHtml(slide.caption || '-')}</td>
                             <td><span style="background:#f0f0f0; padding:4px 10px; border-radius:20px;">${slide.order_position}</span></td>
@@ -307,6 +356,9 @@ if (isset($_GET['logout'])) {
                     });
                     html += '</tbody></table>';
                     $('#imagesTable').html(html);
+                },
+                error: function(xhr, status, error) {
+                    $('#imagesTable').html('<div class="empty-state"><i class="fas fa-database"></i><p>Error loading images: ' + error + '</p></div>');
                 }
             });
         }
@@ -323,7 +375,12 @@ if (isset($_GET['logout'])) {
                         $('#edit_title').val(slide.title);
                         $('#edit_caption').val(slide.caption || '');
                         $('#edit_order').val(slide.order_position);
-                        $('#current_image_preview').attr('src', slide.image_path);
+                        // Fix image path for modal preview
+                        let imgPath = slide.image_path;
+                        if (imgPath && !imgPath.startsWith('http') && !imgPath.startsWith('/')) {
+                            imgPath = '../' + imgPath;
+                        }
+                        $('#current_image_preview').attr('src', imgPath);
                         $('#edit_image_preview').html('');
                         $('#edit_image').val('');
                         $('#editModal').css('display', 'flex');
@@ -340,6 +397,8 @@ if (isset($_GET['logout'])) {
                     $('#edit_image_preview').html(`<img src="${e.target.result}" alt="Preview"><br><small>New image preview</small>`);
                 }
                 reader.readAsDataURL(file);
+            } else {
+                $('#edit_image_preview').html('');
             }
         });
         
@@ -357,8 +416,11 @@ if (isset($_GET['logout'])) {
             formData.append('title', $('#edit_title').val());
             formData.append('caption', $('#edit_caption').val());
             formData.append('order_position', $('#edit_order').val());
+            
             const newImage = $('#edit_image')[0].files[0];
-            if (newImage) formData.append('new_image', newImage);
+            if (newImage) {
+                formData.append('new_image', newImage);
+            }
             
             $('.update-btn').html('<i class="fas fa-spinner fa-spin"></i> Saving...').prop('disabled', true);
             
@@ -377,6 +439,9 @@ if (isset($_GET['logout'])) {
                     } else {
                         alert(res.message);
                     }
+                },
+                error: function() {
+                    alert('Error saving changes');
                 },
                 complete: function() {
                     $('.update-btn').html('<i class="fas fa-save"></i> Save Changes').prop('disabled', false);
@@ -405,12 +470,21 @@ if (isset($_GET['logout'])) {
         
         $('#uploadForm').on('submit', function(e) {
             e.preventDefault();
+            
+            const fileInput = $('#image')[0].files[0];
+            if (!fileInput) {
+                alert('Please select an image file');
+                return;
+            }
+            
             const formData = new FormData();
             formData.append('action', 'add');
             formData.append('title', $('#title').val());
             formData.append('caption', $('#caption').val());
             formData.append('order_position', $('#order_position').val());
-            formData.append('image', $('#image')[0].files[0]);
+            formData.append('image', fileInput);
+            
+            $('.submit-btn').html('<i class="fas fa-spinner fa-spin"></i> Uploading...').prop('disabled', true);
             
             $.ajax({
                 url: 'admin_ajax.php',
@@ -428,6 +502,12 @@ if (isset($_GET['logout'])) {
                     } else {
                         alert(res.message);
                     }
+                },
+                error: function() {
+                    alert('Error uploading image');
+                },
+                complete: function() {
+                    $('.submit-btn').html('<i class="fas fa-upload"></i> Upload Slide').prop('disabled', false);
                 }
             });
         });
