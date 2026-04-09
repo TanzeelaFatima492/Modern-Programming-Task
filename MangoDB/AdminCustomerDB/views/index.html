@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin & Customer Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .card h2 {
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            margin-top: 15px;
+        }
+
+        .stats {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+        }
+
+        .stats h3 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🏢 Admin & Customer Management System</h1>
+
+        <div class="cards">
+            <div class="card">
+                <div class="card-icon">👥</div>
+                <h2>Manage Customers</h2>
+                <p>View, add, edit, and delete customer records</p>
+                <a href="/customers" class="btn">View Customers →</a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">👨‍💼</div>
+                <h2>Manage Admins</h2>
+                <p>Manage system administrators</p>
+                <a href="/admins" class="btn">View Admins →</a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">📊</div>
+                <h2>Dashboard</h2>
+                <p>View system statistics and analytics</p>
+                <a href="/dashboard" class="btn">Go to Dashboard →</a>
+            </div>
+        </div>
+
+        <div class="stats">
+            <h3>📈 Live Statistics</h3>
+            <div class="stats-grid" id="stats">
+                <div class="stat-box">
+                    <div class="stat-number" id="totalCustomers">-</div>
+                    <div>Total Customers</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="totalAdmins">-</div>
+                    <div>Total Admins</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="goldMembers">-</div>
+                    <div>Gold Members</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="totalRevenue">-</div>
+                    <div>Total Revenue</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/stats');
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('totalCustomers').textContent = data.data.totalCustomers;
+                    document.getElementById('totalAdmins').textContent = data.data.totalAdmins;
+                    document.getElementById('goldMembers').textContent = data.data.goldMembers;
+                    document.getElementById('totalRevenue').textContent = `$${data.data.totalRevenue.toFixed(2)}`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        loadStats();
+        setInterval(loadStats, 5000);
+    </script>
+</body>
+
+</html>
