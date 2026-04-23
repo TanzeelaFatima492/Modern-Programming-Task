@@ -4,7 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin & Customer Management System</title>
+    <title>ProPanel | Enterprise Management Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -13,163 +16,804 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            background: #0f0f1e;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        .container {
-            max-width: 1200px;
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveGrid 20s linear infinite;
+        }
+
+        @keyframes moveGrid {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(50px, 50px);
+            }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-100px) rotate(180deg);
+            }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        h1 {
-            text-align: center;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-icon i {
+            font-size: 24px;
             color: white;
-            margin-bottom: 30px;
         }
 
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-icon {
-            font-size: 4em;
-            margin-bottom: 15px;
-        }
-
-        .card h2 {
-            margin-bottom: 15px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 10px 25px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
             color: white;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text p {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
-            border-radius: 25px;
-            margin-top: 15px;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
         }
 
-        .stats {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
         }
 
-        .stats h3 {
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: white;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 100px 2rem 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
             text-align: center;
+            margin-bottom: 80px;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(102, 126, 234, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 50px;
+            color: #a9b4ff;
+            font-size: 0.85rem;
+            font-weight: 500;
             margin-bottom: 20px;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, #e0e0ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            margin-bottom: 60px;
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 60px;
         }
 
-        .stat-box {
-            text-align: center;
-            padding: 15px;
-            background: #f0f0f0;
-            border-radius: 10px;
+        .stat-card {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: left 0.5s;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            background: rgba(0, 0, 0, 0.7);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .stat-icon i {
+            font-size: 28px;
+            color: #a9b4ff;
         }
 
         .stat-number {
-            font-size: 2em;
-            font-weight: bold;
-            color: #667eea;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-trend {
+            font-size: 0.8rem;
+            color: #4ade80;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(74, 222, 128, 0.1);
+            padding: 4px 8px;
+            border-radius: 8px;
+            width: fit-content;
+        }
+
+        .stat-trend i {
+            color: #4ade80;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .feature-card {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 28px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.4s;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .feature-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-15px);
+            background: rgba(0, 0, 0, 0.75);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover .card-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .card-icon i {
+            font-size: 40px;
+            color: white;
+        }
+
+        .feature-card h2 {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .feature-card:hover .btn {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Recent Activity */
+        .recent-section {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 28px;
+            padding: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-header h3 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .section-header h3 i {
+            color: #4ade80;
+            margin-right: 10px;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+
+        .activity-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(10px);
+        }
+
+        .activity-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .activity-icon i {
+            font-size: 20px;
+            color: #a9b4ff;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .activity-time {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+        }
+
+        .activity-value {
+            color: #4ade80;
+            font-weight: 700;
+            font-size: 1.1rem;
+            background: rgba(74, 222, 128, 0.1);
+            padding: 5px 12px;
+            border-radius: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 80px 1rem 1rem;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
         }
     </style>
 </head>
 
 <body>
+    <div class="animated-bg"></div>
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>ProPanel</h1>
+                    <p>Enterprise Suite</p>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="active">Home</a>
+                <a href="/customers">Customers</a>
+                <a href="/admins">Admins</a>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
-        <h1>🏢 Admin & Customer Management System</h1>
-
-        <div class="cards">
-            <div class="card">
-                <div class="card-icon">👥</div>
-                <h2>Manage Customers</h2>
-                <p>View, add, edit, and delete customer records</p>
-                <a href="/customers" class="btn">View Customers →</a>
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-badge">
+                <i class="fas fa-rocket"></i> Next-Gen Management Platform
             </div>
+            <h1>Transform Your Business<br>Operations Today</h1>
+            <p>Experience the future of customer and admin management with real-time analytics, AI-powered insights, and
+                seamless collaboration</p>
+        </div>
 
-            <div class="card">
-                <div class="card-icon">👨‍💼</div>
-                <h2>Manage Admins</h2>
-                <p>Manage system administrators</p>
-                <a href="/admins" class="btn">View Admins →</a>
-            </div>
-
-            <div class="card">
-                <div class="card-icon">📊</div>
-                <h2>Dashboard</h2>
-                <p>View system statistics and analytics</p>
-                <a href="/dashboard" class="btn">Go to Dashboard →</a>
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <div class="stat-number">-</div>
+                    <div class="stat-label">Loading...</div>
+                </div>
             </div>
         </div>
 
-        <div class="stats">
-            <h3>📈 Live Statistics</h3>
-            <div class="stats-grid" id="stats">
-                <div class="stat-box">
-                    <div class="stat-number" id="totalCustomers">-</div>
-                    <div>Total Customers</div>
+        <!-- Feature Cards -->
+        <div class="cards-grid">
+            <div class="feature-card" onclick="window.location.href='/customers'">
+                <div class="card-icon">
+                    <i class="fas fa-users"></i>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-number" id="totalAdmins">-</div>
-                    <div>Total Admins</div>
+                <h2>Customer Management</h2>
+                <p>Manage your customer relationships with powerful tools including segmentation, lifecycle tracking,
+                    and personalized engagement strategies.</p>
+                <div class="btn">
+                    Manage Customers <i class="fas fa-arrow-right"></i>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-number" id="goldMembers">-</div>
-                    <div>Gold Members</div>
+            </div>
+
+            <div class="feature-card" onclick="window.location.href='/admins'">
+                <div class="card-icon">
+                    <i class="fas fa-user-shield"></i>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-number" id="totalRevenue">-</div>
-                    <div>Total Revenue</div>
+                <h2>Admin Control</h2>
+                <p>Complete control over administrator roles, permissions, and access levels with granular security
+                    settings and audit logs.</p>
+                <div class="btn">
+                    Manage Admins <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+
+            <div class="feature-card" onclick="window.location.href='/dashboard'">
+                <div class="card-icon">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <h2>Analytics Hub</h2>
+                <p>Real-time dashboards, predictive analytics, and actionable insights to drive business growth and
+                    optimize performance.</p>
+                <div class="btn">
+                    View Analytics <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="recent-section">
+            <div class="section-header">
+                <h3><i class="fas fa-clock"></i> Recent Activity</h3>
+                <div class="activity-value">Live Updates</div>
+            </div>
+            <div class="activity-list" id="activityList">
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Loading latest activities...</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 5 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.animationDelay = `${Math.random() * 20}s`;
+                particle.style.animationDuration = `${Math.random() * 20 + 10}s`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Load statistics
         async function loadStats() {
             try {
                 const response = await fetch('/api/stats');
                 const data = await response.json();
 
                 if (data.success) {
-                    document.getElementById('totalCustomers').textContent = data.data.totalCustomers;
-                    document.getElementById('totalAdmins').textContent = data.data.totalAdmins;
-                    document.getElementById('goldMembers').textContent = data.data.goldMembers;
-                    document.getElementById('totalRevenue').textContent = `$${data.data.totalRevenue.toFixed(2)}`;
+                    const statsHtml = `
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-number">${data.data.totalCustomers}</div>
+                            <div class="stat-label">Total Customers</div>
+                            <div class="stat-trend">
+                                <i class="fas fa-chart-line"></i> +12% growth
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-number">$${data.data.totalRevenue.toLocaleString()}</div>
+                            <div class="stat-label">Total Revenue</div>
+                            <div class="stat-trend">
+                                <i class="fas fa-arrow-up"></i> +8.5% this month
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <div class="stat-number">${data.data.goldMembers}</div>
+                            <div class="stat-label">Gold Members</div>
+                            <div class="stat-trend">
+                                <i class="fas fa-star"></i> Premium tier
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="stat-number">$${data.data.averageSpending?.toFixed(2) || '0'}</div>
+                            <div class="stat-label">Avg Customer Value</div>
+                            <div class="stat-trend">
+                                <i class="fas fa-arrow-up"></i> +5.2% increase
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('statsGrid').innerHTML = statsHtml;
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error loading stats:', error);
             }
         }
 
+        // Load recent activities
+        async function loadRecentActivities() {
+            try {
+                const response = await fetch('/api/customers');
+                const data = await response.json();
+
+                if (data.success && data.data.length > 0) {
+                    const recentCustomers = data.data.slice(0, 5);
+                    const activitiesHtml = recentCustomers.map(customer => `
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">New customer added: ${customer.firstName} ${customer.lastName}</div>
+                                <div class="activity-time">${customer.joinDate || 'Today'} • Customer ID: ${customer.customerId}</div>
+                            </div>
+                            <div class="activity-value">$${customer.totalSpent.toFixed(2)}</div>
+                        </div>
+                    `).join('');
+
+                    if (recentCustomers.length > 0) {
+                        document.getElementById('activityList').innerHTML = activitiesHtml;
+                    } else {
+                        document.getElementById('activityList').innerHTML = `
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">No recent activity</div>
+                                    <div class="activity-time">Add customers to see activity here</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading activities:', error);
+            }
+        }
+
+        // Add animation to cards on scroll
+        function addScrollAnimation() {
+            const cards = document.querySelectorAll('.feature-card, .stat-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'all 0.6s ease';
+                observer.observe(card);
+            });
+        }
+
+        // Initialize
+        createParticles();
         loadStats();
-        setInterval(loadStats, 5000);
+        loadRecentActivities();
+        addScrollAnimation();
+
+        // Refresh stats every 10 seconds
+        setInterval(() => {
+            loadStats();
+            loadRecentActivities();
+        }, 10000);
     </script>
 </body>
 
