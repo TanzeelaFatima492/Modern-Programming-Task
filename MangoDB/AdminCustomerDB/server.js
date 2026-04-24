@@ -6,7 +6,7 @@ const Customer = require('./models/Customer');
 const Admin = require('./models/Admin');
 
 const app = express();
-  const PORT = 3002;
+const PORT = 3001;
 
 // Middleware
 app.use(cors());
@@ -23,10 +23,26 @@ mongoose.connect(MONGODB_URI);
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, '❌ MongoDB connection error:'));
-db.once('open', () => {
+db.once('open', async () => {
     console.log('✅ Connected to MongoDB successfully');
     console.log('📊 Database: customer_management');
-    console.log('📁 Collections: customers, admins');
+    
+    // Check if collections exist
+    try {
+        const collections = await mongoose.connection.db.listCollections().toArray();
+        const collectionNames = collections.map(c => c.name);
+        
+        console.log('📁 Available collections:', collectionNames.join(', ') || 'No collections yet');
+        
+        if (!collectionNames.includes('customers')) {
+            console.log('⚠️ Customers collection will be created when you add first customer');
+        }
+        if (!collectionNames.includes('admins')) {
+            console.log('⚠️ Admins collection will be created when you add first admin');
+        }
+    } catch (err) {
+        console.log('📁 Collections will be created automatically when data is added');
+    }
 });
 
 // Initialize sample data if collections are empty
@@ -80,7 +96,7 @@ async function initializeSampleData() {
                 }
             ];
             await Customer.insertMany(sampleCustomers);
-            console.log('📝 Sample customer data inserted');
+            console.log('📝 Sample customer data inserted successfully');
         }
 
         // Initialize Admins
@@ -125,7 +141,7 @@ async function initializeSampleData() {
                 }
             ];
             await Admin.insertMany(sampleAdmins);
-            console.log('📝 Sample admin data inserted');
+            console.log('📝 Sample admin data inserted successfully');
         }
     } catch (error) {
         console.error('Error initializing sample data:', error);
@@ -331,6 +347,30 @@ app.get('/api/stats', async (req, res) => {
     }
 });
 
+// ============= TEST DATABASE ROUTE =============
+
+// Test route to check database connection
+app.get('/api/test-db', async (req, res) => {
+    try {
+        const customers = await Customer.find();
+        const admins = await Admin.find();
+        
+        res.json({
+            success: true,
+            message: 'Database connection successful',
+            stats: {
+                customersCount: customers.length,
+                adminsCount: admins.length,
+                databaseName: mongoose.connection.db.databaseName
+            },
+            sampleCustomer: customers[0] || null,
+            sampleAdmin: admins[0] || null
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 // ============= SERVE HTML PAGES =============
 
 app.get('/', (req, res) => {
@@ -344,8 +384,6 @@ app.get('/customers', (req, res) => {
 app.get('/admins', (req, res) => {
     res.sendFile(path.join(__dirname, 'Views', 'admins.html'));
 });
-
-// ============= START SERVER =============
 
 // ============= START SERVER =============
 
@@ -370,6 +408,7 @@ async function startServer() {
                         console.log(`   Connection: mongodb://localhost:27017`);
                         console.log(`   Database: customer_management`);
                         console.log(`   Collections: customers, admins\n`);
+                        console.log(`🔍 Test database: http://localhost:${port}/api/test-db\n`);
                         serverStarted = true;
                         resolve();
                     });
