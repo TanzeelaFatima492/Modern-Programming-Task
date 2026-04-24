@@ -211,6 +211,11 @@
             transition: all 0.3s;
         }
 
+        .btn-export:hover {
+            background: rgba(74, 222, 128, 0.3);
+            transform: translateY(-2px);
+        }
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -269,9 +274,11 @@
 
         .filters-section {
             background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
             border-radius: 20px;
             padding: 20px;
             margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .filters-row {
@@ -301,6 +308,17 @@
             border-radius: 12px;
             font-size: 0.95em;
             color: white;
+            transition: all 0.3s;
+        }
+
+        .search-wrapper input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .search-wrapper input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
         }
 
         .filter-wrapper {
@@ -314,6 +332,7 @@
             top: 50%;
             transform: translateY(-50%);
             color: rgba(255, 255, 255, 0.5);
+            z-index: 1;
         }
 
         .filter-wrapper select {
@@ -322,8 +341,19 @@
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px;
+            font-size: 0.95em;
             color: white;
             cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-wrapper select option {
+            background: #1e293b;
+        }
+
+        .filter-wrapper select:focus {
+            outline: none;
+            border-color: #667eea;
         }
 
         .customers-grid {
@@ -344,6 +374,7 @@
         .customer-card:hover {
             transform: translateY(-8px);
             background: rgba(0, 0, 0, 0.7);
+            border-color: rgba(102, 126, 234, 0.5);
         }
 
         .card-header {
@@ -352,6 +383,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
         }
 
         .customer-avatar img {
@@ -359,11 +391,18 @@
             height: 80px;
             border-radius: 50%;
             border: 3px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .customer-card:hover .customer-avatar img {
+            transform: scale(1.05);
         }
 
         .membership-badge {
             padding: 6px 14px;
             border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 700;
             background: rgba(255, 255, 255, 0.2);
             color: white;
         }
@@ -385,6 +424,12 @@
             gap: 12px;
             margin: 10px 0;
             color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9em;
+        }
+
+        .customer-info i {
+            width: 20px;
+            color: #a9b4ff;
         }
 
         .stats-row {
@@ -407,11 +452,19 @@
             color: #a9b4ff;
         }
 
+        .stat-label {
+            font-size: 0.7em;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
         .card-actions {
             display: flex;
             gap: 12px;
             padding: 15px 20px;
             background: rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .btn-edit,
@@ -439,6 +492,13 @@
             color: white;
         }
 
+        .btn-edit:hover,
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -458,7 +518,22 @@
             border-radius: 28px;
             width: 550px;
             max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .modal-header {
@@ -469,16 +544,45 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .close {
             cursor: pointer;
             font-size: 1.8em;
             transition: all 0.3s;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
         }
 
         .modal-body {
             padding: 30px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
         .form-group {
@@ -488,7 +592,15 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
+            font-weight: 600;
             color: white;
+            font-size: 0.9em;
+        }
+
+        .form-group label.required::after {
+            content: '*';
+            color: #ef4444;
+            margin-left: 4px;
         }
 
         .form-group input,
@@ -498,7 +610,21 @@
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px;
+            font-size: 0.95em;
             color: white;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
         }
 
         .modal-footer {
@@ -507,46 +633,122 @@
             gap: 12px;
             justify-content: flex-end;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 0 0 28px 28px;
         }
 
         .btn-save {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #4ade80, #22c55e);
             color: white;
             border: none;
             padding: 12px 28px;
             border-radius: 12px;
             cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(74, 222, 128, 0.4);
         }
 
         .btn-cancel {
             background: rgba(255, 255, 255, 0.1);
             color: white;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 12px 28px;
             border-radius: 12px;
             cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Toast Notification */
         .toast {
             position: fixed;
             bottom: 30px;
             right: 30px;
             background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
             padding: 16px 24px;
             border-radius: 12px;
             display: none;
+            align-items: center;
+            gap: 12px;
             z-index: 2100;
+            border-left: 4px solid;
             color: white;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         .toast.success {
-            border-left: 4px solid #4ade80;
+            border-left-color: #4ade80;
         }
 
         .toast.error {
-            border-left: 4px solid #ef4444;
+            border-left-color: #ef4444;
         }
 
+        .toast i {
+            font-size: 1.2em;
+        }
+
+        .toast.success i {
+            color: #4ade80;
+        }
+
+        .toast.error i {
+            color: #ef4444;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            text-align: center;
+            padding: 60px;
+            color: white;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
@@ -559,6 +761,41 @@
             .customers-grid {
                 grid-template-columns: 1fr;
             }
+
+            .filters-row {
+                flex-direction: column;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
         }
     </style>
 </head>
@@ -566,10 +803,13 @@
 <body>
     <div class="animated-bg"></div>
 
+    <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">
-                <div class="logo-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="logo-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
                 <div class="logo-text">
                     <h1>ProPanel</h1>
                     <p>Enterprise Suite</p>
@@ -584,86 +824,130 @@
     </nav>
 
     <div class="main-content">
+        <!-- Top Bar -->
         <div class="top-bar">
             <div class="page-title">
-                <h1>Customer Management</h1>
-                <p>Manage your customers - Changes are saved to MongoDB</p>
+                <h1><i class="fas fa-users"></i> Customer Management</h1>
+                <p>Manage your customers - All changes are saved to MongoDB</p>
             </div>
             <div class="action-buttons">
-                <button class="btn-export" onclick="exportData()"><i class="fas fa-download"></i> Export CSV</button>
-                <button class="btn-add" onclick="showAddModal()"><i class="fas fa-plus"></i> New Customer</button>
+                <button class="btn-export" onclick="exportData()">
+                    <i class="fas fa-download"></i> Export CSV
+                </button>
+                <button class="btn-add" onclick="showAddModal()">
+                    <i class="fas fa-plus"></i> New Customer
+                </button>
             </div>
         </div>
 
-        <div class="stats-grid" id="statsGrid"></div>
+        <!-- Statistics Cards -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <h4>Loading...</h4>
+                    <div class="stat-icon"><i class="fas fa-spinner fa-spin"></i></div>
+                </div>
+                <div class="stat-number">-</div>
+            </div>
+        </div>
 
+        <!-- Filters -->
         <div class="filters-section">
             <div class="filters-row">
                 <div class="search-wrapper">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Search customers..." onkeyup="filterCustomers()">
+                    <input type="text" id="searchInput" placeholder="Search by name, email, or phone..."
+                        onkeyup="filterCustomers()">
                 </div>
                 <div class="filter-wrapper">
                     <i class="fas fa-trophy"></i>
                     <select id="membershipFilter" onchange="filterCustomers()">
                         <option value="">All Memberships</option>
-                        <option value="Silver">Silver</option>
-                        <option value="Gold">Gold</option>
-                        <option value="Platinum">Platinum</option>
+                        <option value="Silver">🥈 Silver Member</option>
+                        <option value="Gold">🥇 Gold Member</option>
+                        <option value="Platinum">💎 Platinum Member</option>
+                    </select>
+                </div>
+                <div class="filter-wrapper">
+                    <i class="fas fa-sort"></i>
+                    <select id="sortBy" onchange="sortCustomers()">
+                        <option value="name">Sort by Name (A-Z)</option>
+                        <option value="name-desc">Sort by Name (Z-A)</option>
+                        <option value="spent">Sort by Spending (High-Low)</option>
+                        <option value="spent-asc">Sort by Spending (Low-High)</option>
                     </select>
                 </div>
             </div>
         </div>
 
+        <!-- Customers Grid -->
         <div id="customersGrid" class="customers-grid">
-            <div class="loading-spinner" style="text-align:center;padding:60px;color:white;">Loading customers from
-                MongoDB...</div>
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Loading customers from MongoDB...</p>
+            </div>
         </div>
     </div>
 
-    <div id="modal" class="modal">
+    <!-- Add/Edit Customer Modal -->
+    <div id="customerModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modalTitle">Add New Customer</h2>
+                <h2 id="modalTitle">
+                    <i class="fas fa-user-plus"></i> Add New Customer
+                </h2>
                 <span class="close" onclick="closeModal()">&times;</span>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <label>First Name *</label>
-                    <input type="text" id="firstName" placeholder="Enter first name">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="required">First Name</label>
+                        <input type="text" id="firstName" placeholder="Enter first name">
+                    </div>
+                    <div class="form-group">
+                        <label class="required">Last Name</label>
+                        <input type="text" id="lastName" placeholder="Enter last name">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>Last Name *</label>
-                    <input type="text" id="lastName" placeholder="Enter last name">
-                </div>
-                <div class="form-group">
-                    <label>Email *</label>
+                    <label class="required">Email Address</label>
                     <input type="email" id="email" placeholder="customer@example.com">
                 </div>
                 <div class="form-group">
-                    <label>Phone</label>
+                    <label>Phone Number</label>
                     <input type="text" id="phone" placeholder="+1 (555) 123-4567">
                 </div>
-                <div class="form-group">
-                    <label>Membership</label>
-                    <select id="membership">
-                        <option value="Silver">Silver</option>
-                        <option value="Gold">Gold</option>
-                        <option value="Platinum">Platinum</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Membership Level</label>
+                        <select id="membership">
+                            <option value="Silver">🥈 Silver</option>
+                            <option value="Gold">🥇 Gold</option>
+                            <option value="Platinum">💎 Platinum</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Total Spent ($)</label>
+                        <input type="number" id="totalSpent" placeholder="0.00" step="0.01" value="0">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>Total Spent ($)</label>
-                    <input type="number" id="totalSpent" placeholder="0.00" step="0.01">
+                    <label>Address</label>
+                    <input type="text" id="address" placeholder="Enter address (optional)">
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-                <button class="btn-save" onclick="saveCustomer()">Save to MongoDB</button>
+                <button class="btn-cancel" onclick="closeModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn-save" onclick="saveCustomer()">
+                    <i class="fas fa-save"></i> Save to MongoDB
+                </button>
             </div>
         </div>
     </div>
 
+    <!-- Toast Notification -->
     <div id="toast" class="toast"></div>
 
     <script>
@@ -679,14 +963,14 @@
                     allCustomers = data.data;
                     updateStats();
                     displayCustomers();
-                    showToast(`Loaded ${allCustomers.length} customers from MongoDB`, 'success');
+                    showToast(`✅ Loaded ${allCustomers.length} customers from MongoDB`, 'success');
                 } else {
-                    showToast('Failed to load customers', 'error');
+                    showToast('❌ Failed to load customers', 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                showToast('Error connecting to MongoDB', 'error');
-                document.getElementById('customersGrid').innerHTML = '<div style="text-align:center;padding:60px;color:white;">❌ Failed to connect to MongoDB. Make sure server is running.</div>';
+                showToast('❌ Error connecting to MongoDB', 'error');
+                document.getElementById('customersGrid').innerHTML = '<div class="loading-spinner"><i class="fas fa-database" style="font-size: 3em; margin-bottom: 15px; display: block;"></i><p>Failed to connect to MongoDB. Make sure server is running.</p></div>';
             }
         }
 
@@ -696,12 +980,37 @@
             const totalRevenue = allCustomers.reduce((sum, c) => sum + (c.totalSpent || 0), 0);
             const avgSpending = total > 0 ? totalRevenue / total : 0;
             const goldMembers = allCustomers.filter(c => c.membership === 'Gold').length;
+            const platinumMembers = allCustomers.filter(c => c.membership === 'Platinum').length;
 
             const statsHtml = `
-                <div class="stat-card"><div class="stat-header"><h4>Total Customers</h4><div class="stat-icon"><i class="fas fa-users"></i></div></div><div class="stat-number">${total}</div></div>
-                <div class="stat-card"><div class="stat-header"><h4>Total Revenue</h4><div class="stat-icon"><i class="fas fa-dollar-sign"></i></div></div><div class="stat-number">$${totalRevenue.toLocaleString()}</div></div>
-                <div class="stat-card"><div class="stat-header"><h4>Average Value</h4><div class="stat-icon"><i class="fas fa-chart-line"></i></div></div><div class="stat-number">$${avgSpending.toFixed(2)}</div></div>
-                <div class="stat-card"><div class="stat-header"><h4>Gold Members</h4><div class="stat-icon"><i class="fas fa-crown"></i></div></div><div class="stat-number">${goldMembers}</div></div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h4>Total Customers</h4>
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    </div>
+                    <div class="stat-number">${total}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h4>Total Revenue</h4>
+                        <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                    </div>
+                    <div class="stat-number">$${totalRevenue.toLocaleString()}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h4>Average Value</h4>
+                        <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                    </div>
+                    <div class="stat-number">$${avgSpending.toFixed(2)}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h4>Gold/Platinum</h4>
+                        <div class="stat-icon"><i class="fas fa-crown"></i></div>
+                    </div>
+                    <div class="stat-number">${goldMembers} / ${platinumMembers}</div>
+                </div>
             `;
             document.getElementById('statsGrid').innerHTML = statsHtml;
         }
@@ -718,7 +1027,8 @@
                 filtered = filtered.filter(c =>
                     c.firstName.toLowerCase().includes(search) ||
                     c.lastName.toLowerCase().includes(search) ||
-                    c.email.toLowerCase().includes(search)
+                    c.email.toLowerCase().includes(search) ||
+                    (c.phone && c.phone.toLowerCase().includes(search))
                 );
             }
             if (membership) {
@@ -726,7 +1036,14 @@
             }
 
             if (filtered.length === 0) {
-                grid.innerHTML = `<div style="text-align:center;padding:80px;background:rgba(0,0,0,0.6);border-radius:20px;color:white;">No customers found</div>`;
+                grid.innerHTML = `<div style="text-align:center;padding:80px;background:rgba(0,0,0,0.6);border-radius:20px;">
+                    <i class="fas fa-users-slash" style="font-size: 4em; color: #4ade80; margin-bottom: 15px; display: block;"></i>
+                    <h3 style="color: white;">No customers found</h3>
+                    <p style="color: rgba(255,255,255,0.7); margin-top: 10px;">Try adjusting your search or add a new customer</p>
+                    <button class="btn-add" style="margin-top: 20px;" onclick="showAddModal()">
+                        <i class="fas fa-plus"></i> Add Customer
+                    </button>
+                </div>`;
                 return;
             }
 
@@ -734,28 +1051,61 @@
                 <div class="customer-card">
                     <div class="card-header">
                         <div class="customer-avatar">
-                            <img src="https://ui-avatars.com/api/?name=${customer.firstName}+${customer.lastName}&background=667eea&color=fff&size=80">
+                            <img src="https://ui-avatars.com/api/?name=${customer.firstName}+${customer.lastName}&background=667eea&color=fff&bold=true&size=80" alt="Avatar">
                         </div>
-                        <div class="membership-badge">${customer.membership}</div>
+                        <div class="membership-badge">
+                            <i class="fas ${customer.membership === 'Platinum' ? 'fa-gem' : customer.membership === 'Gold' ? 'fa-crown' : 'fa-star'}"></i>
+                            ${customer.membership}
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="customer-name">${customer.firstName} ${customer.lastName}</div>
                         <div class="customer-info"><i class="fas fa-envelope"></i> ${customer.email}</div>
                         <div class="customer-info"><i class="fas fa-phone"></i> ${customer.phone || 'Not provided'}</div>
                         <div class="stats-row">
-                            <div class="stat"><div class="stat-value">$${customer.totalSpent.toFixed(2)}</div><div class="stat-label">Spent</div></div>
-                            <div class="stat"><div class="stat-value">${customer.orders || 0}</div><div class="stat-label">Orders</div></div>
+                            <div class="stat">
+                                <div class="stat-value">$${customer.totalSpent.toFixed(2)}</div>
+                                <div class="stat-label">Total Spent</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${customer.orders || 0}</div>
+                                <div class="stat-label">Orders</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${customer.joinDate || '2024'}</div>
+                                <div class="stat-label">Joined</div>
+                            </div>
                         </div>
                     </div>
                     <div class="card-actions">
-                        <button class="btn-edit" onclick="editCustomer('${customer.customerId}')"><i class="fas fa-edit"></i> Edit</button>
-                        <button class="btn-delete" onclick="deleteCustomer('${customer.customerId}')"><i class="fas fa-trash"></i> Delete</button>
+                        <button class="btn-edit" onclick="editCustomer('${customer.customerId}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn-delete" onclick="deleteCustomer('${customer.customerId}')">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
                     </div>
                 </div>
             `).join('');
         }
 
+        // Filter customers
         function filterCustomers() {
+            displayCustomers();
+        }
+
+        // Sort customers
+        function sortCustomers() {
+            const sortBy = document.getElementById('sortBy').value;
+            if (sortBy === 'name') {
+                allCustomers.sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`));
+            } else if (sortBy === 'name-desc') {
+                allCustomers.sort((a, b) => `${b.firstName} ${b.lastName}`.localeCompare(`${a.firstName} ${a.lastName}`));
+            } else if (sortBy === 'spent') {
+                allCustomers.sort((a, b) => b.totalSpent - a.totalSpent);
+            } else if (sortBy === 'spent-asc') {
+                allCustomers.sort((a, b) => a.totalSpent - b.totalSpent);
+            }
             displayCustomers();
         }
 
@@ -771,14 +1121,15 @@
         // Show add modal
         function showAddModal() {
             currentEditId = null;
-            document.getElementById('modalTitle').innerHTML = 'Add New Customer';
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus"></i> Add New Customer';
             document.getElementById('firstName').value = '';
             document.getElementById('lastName').value = '';
             document.getElementById('email').value = '';
             document.getElementById('phone').value = '';
             document.getElementById('membership').value = 'Silver';
             document.getElementById('totalSpent').value = '0';
-            document.getElementById('modal').style.display = 'flex';
+            document.getElementById('address').value = '';
+            document.getElementById('customerModal').style.display = 'flex';
         }
 
         // Edit customer
@@ -788,17 +1139,18 @@
                 const data = await response.json();
                 if (data.success) {
                     currentEditId = customerId;
-                    document.getElementById('modalTitle').innerHTML = 'Edit Customer';
+                    document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-edit"></i> Edit Customer';
                     document.getElementById('firstName').value = data.data.firstName;
                     document.getElementById('lastName').value = data.data.lastName;
                     document.getElementById('email').value = data.data.email;
                     document.getElementById('phone').value = data.data.phone || '';
                     document.getElementById('membership').value = data.data.membership;
                     document.getElementById('totalSpent').value = data.data.totalSpent;
-                    document.getElementById('modal').style.display = 'flex';
+                    document.getElementById('address').value = data.data.address?.street || '';
+                    document.getElementById('customerModal').style.display = 'flex';
                 }
             } catch (error) {
-                showToast('Error loading customer', 'error');
+                showToast('❌ Error loading customer data', 'error');
             }
         }
 
@@ -809,7 +1161,7 @@
             const email = document.getElementById('email').value.trim();
 
             if (!firstName || !lastName || !email) {
-                showToast('Please fill all required fields', 'error');
+                showToast('❌ Please fill all required fields (First Name, Last Name, Email)', 'error');
                 return;
             }
 
@@ -821,9 +1173,10 @@
                 phone: document.getElementById('phone').value.trim(),
                 membership: document.getElementById('membership').value,
                 totalSpent: parseFloat(document.getElementById('totalSpent').value) || 0,
-                orders: Math.floor(Math.random() * 30) + 1,
+                orders: Math.floor(Math.random() * 30) + 5,
                 joinDate: new Date().toISOString().split('T')[0],
-                lastActive: new Date().toISOString().split('T')[0]
+                lastActive: new Date().toISOString().split('T')[0],
+                address: { street: document.getElementById('address').value.trim() }
             };
 
             try {
@@ -844,65 +1197,97 @@
 
                 const result = await response.json();
                 if (result.success) {
-                    showToast(currentEditId ? 'Customer updated in MongoDB!' : 'Customer added to MongoDB!', 'success');
+                    showToast(currentEditId ? '✅ Customer updated in MongoDB!' : '✅ Customer added to MongoDB!', 'success');
                     closeModal();
                     loadCustomers(); // Reload from database
                 } else {
-                    showToast(result.error || 'Error saving customer', 'error');
+                    showToast('❌ ' + (result.error || 'Error saving customer'), 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                showToast('Error saving to MongoDB', 'error');
+                showToast('❌ Error saving to MongoDB', 'error');
             }
         }
 
         // Delete customer from MongoDB
         async function deleteCustomer(customerId) {
-            if (confirm('⚠️ Delete this customer from MongoDB? This action cannot be undone.')) {
+            if (confirm('⚠️ Are you sure you want to delete this customer from MongoDB?\n\nThis action cannot be undone!')) {
                 try {
                     const response = await fetch(`/api/customers/${customerId}`, { method: 'DELETE' });
                     const result = await response.json();
                     if (result.success) {
-                        showToast('Customer deleted from MongoDB!', 'success');
+                        showToast('✅ Customer deleted from MongoDB!', 'success');
                         loadCustomers(); // Reload from database
                     } else {
-                        showToast('Error deleting customer', 'error');
+                        showToast('❌ Error deleting customer', 'error');
                     }
                 } catch (error) {
                     console.error('Error:', error);
-                    showToast('Error deleting from MongoDB', 'error');
+                    showToast('❌ Error deleting from MongoDB', 'error');
                 }
             }
         }
 
         // Export to CSV
         function exportData() {
-            const headers = ['ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Membership', 'Total Spent'];
-            const rows = allCustomers.map(c => [c.customerId, c.firstName, c.lastName, c.email, c.phone || '', c.membership, c.totalSpent]);
+            const headers = ['Customer ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Membership', 'Total Spent', 'Orders', 'Join Date'];
+            const rows = allCustomers.map(c => [
+                c.customerId, c.firstName, c.lastName, c.email, c.phone || '', c.membership, c.totalSpent, c.orders || 0, c.joinDate || ''
+            ]);
             const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
             const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
+            a.href = url;
             a.download = `customers_${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
-            showToast('Export successful!', 'success');
+            URL.revokeObjectURL(url);
+            showToast('📥 Data exported successfully!', 'success');
         }
 
+        // Close modal
         function closeModal() {
-            document.getElementById('modal').style.display = 'none';
+            document.getElementById('customerModal').style.display = 'none';
         }
 
+        // Show toast notification
         function showToast(message, type) {
             const toast = document.getElementById('toast');
             toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
             toast.className = `toast ${type}`;
             toast.style.display = 'flex';
-            setTimeout(() => toast.style.display = 'none', 3000);
+            setTimeout(() => {
+                toast.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                    toast.style.animation = '';
+                }, 300);
+            }, 3000);
         }
 
+        // Add slideOut animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Close modal when clicking outside
         window.onclick = function (event) {
-            const modal = document.getElementById('modal');
-            if (event.target === modal) closeModal();
+            const modal = document.getElementById('customerModal');
+            if (event.target === modal) {
+                closeModal();
+            }
         }
 
         // Load customers on page load
