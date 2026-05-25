@@ -514,7 +514,7 @@ if (isset($_GET['logout'])) {
         
         function showMessage(msg) {
             $('#message').html(`<div class="alert-success"><i class="fas fa-check-circle"></i> ${msg}</div>`);
-            setTimeout(() => $('#message').html(''), 3000);
+            setTimeout(() => $('#message').html(''), 3001);
         }
         
         function escapeHtml(str) {
